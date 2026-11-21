@@ -3,7 +3,7 @@ schema_version: 1
 context:
   name: ppxlib
   version: "0.39.0"
-  build_number: 0
+  build_number: 1
 
   # ocaml_win-64 ships gcc_* and vs2022_* at the same version/build; name the track.
   c_toolchain: ${{ "" if unix else c_compiler ~ "_*" }}
@@ -65,6 +65,7 @@ requirements:
       then:
         - ocaml_${{ target_platform }} ${{ ocaml_compiler_version }}.* ${{ c_toolchain }}
     - ocaml-compiler-libs >=0.11
+    - ocaml-dune >=3.4
     - ocaml-ppx-derivers >=1.0
     - ocaml-sexplib0 >=0.12
     - ocaml-stdlib-shims
@@ -78,6 +79,8 @@ requirements:
     - if: not unix
       then:
         - ocaml_${{ target_platform }} ${{ ocaml_compiler_version }}.* ${{ c_toolchain }}
+    # installed dune-package declares (lang dune X.Y); older dune cannot read it
+    - ${{ pin_compatible('ocaml-dune', lower_bound='x.x', upper_bound=None) }}
 
 tests:
   - package_contents:
